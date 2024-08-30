@@ -14,6 +14,18 @@ const db = new sqlite3.Database('./database/alumni.db', (err) => {
 
 app.use(express.json());
 
+// Signup route
+app.post('/api/signup', (req, res) => {
+    const { name, email, industry, interests } = req.body;
+    const sql = 'INSERT INTO users (name, email, industry, interests) VALUES (?, ?, ?, ?)';
+    db.run(sql, [name, email, industry, interests], function(err) {
+        if (err) {
+            return res.status(400).json({ error: err.message });
+        }
+        res.status(201).json({ id: this.lastID });
+    });
+});
+
 // Basic route
 app.get('/', (req, res) => {
     res.send('Welcome to the Alumni Connect Platform!');
